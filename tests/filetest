@@ -1,4 +1,15 @@
 key: "value"
 hello: world
 foo: "goo koo and loo"
-array: "test"
+array:
+{
+  test: t
+  yoo:
+  {
+    d: b
+  }
+}
+
+goo: roo
+
+
