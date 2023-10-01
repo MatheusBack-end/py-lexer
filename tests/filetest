@@ -1,3 +1,4 @@
 key: "value"
 hello: world
-foo:
+foo: "goo koo and loo"
+array: "test"

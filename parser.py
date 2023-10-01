@@ -51,7 +51,7 @@ class Parser():
             return token
 
         if char == '}':
-            token = Token('operator', '}')
+            token = Token('operator', '}', self.line)
             self.consume_char()
 
             return token
@@ -78,7 +78,7 @@ class Parser():
             self.consume_char()
             return self.get_next_token()
 
-        print('unespected token', char)
+        print('unespected token ' + str(char) + ' on line: ' + str(self.line))
         quit(1)
 
 
