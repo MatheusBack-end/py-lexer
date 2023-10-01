@@ -1,17 +1,5 @@
 from node import Node
 
-class Nodev():
-
-    nodes = []
-    value = None
-    key   = None
-    previous_scope = None
-
-    def __init__(self, key, value):
-        self.key = key
-        self.value = value
-
-
 class Interpreter():
 
     tokens = []
