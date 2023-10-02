@@ -1,4 +1,17 @@
 from node import Node
+from debug_nodes import DebugNodes
+
+class Nodev():
+
+    nodes = []
+    value = None
+    key   = None
+    previous_scope = None
+
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+
 
 class Interpreter():
 
@@ -19,6 +32,8 @@ class Interpreter():
 
         while self.eat():
             pass
+
+        DebugNodes(self.document_node)
     
     def next_token(self):
         self.pos += 1

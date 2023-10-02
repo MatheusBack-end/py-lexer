@@ -1,15 +1,5 @@
-key: "value"
-hello: world
-foo: "goo koo and loo"
-array:
+foo: goo
+raa:
 {
-  test: t
-  yoo:
-  {
-    d: b
-  }
+  hoo: iee
 }
-
-goo: roo
-
-
