@@ -2,4 +2,8 @@ foo: goo
 raa:
 {
   hoo: iee
+  hoo:
+  {
+    poo: oop
+  }
 }
