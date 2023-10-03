@@ -69,14 +69,22 @@ class Interpreter():
             self.consume(['identifier', 'string'])
 
             if self.current_token.value == '{':
+                unique = value
+                value = []
+                value.append(unique)
                 new_scope = Node(key.value, '(array)')
                 new_scope.nodes = []
 
                 new_scope.previous_scope = self.scope
-                self.scope.nodes.append(new_scope)
+                #self.scope.nodes.append(new_scope)
+                node = Node(key.value, value)
+                node.nodes = []
+                self.scope.nodes.append(node)
+                value.append(new_scope)
                 self.scope = new_scope
                 self.consume(['operator'])
 
+                
                 return True
             
             #print(str(self.current_token.line))
@@ -93,10 +101,10 @@ class Interpreter():
                 if self.current_token.value == '{':
                     new_scope = Node(key.value, '(array)')
                     new_scope.nodes = []
-
+                    
                     new_scope.previous_scope = self.scope
-                    self.scope.nodes.append(new_scope)
                     self.scope = new_scope
+                    value.append(new_scope)
                     self.consume(["operator"])
 
                     return True
