@@ -26,6 +26,10 @@ class Interpreter():
         self.document_node = Node('document_node', None)
     
     def interpreter(self):
+        #for i in range(0, len(self.tokens), 1):
+            #print(self.tokens[i].type)
+            
+        #return
         self.scope = self.document_node
         self.scope.nodes = []
         self.current_token = self.tokens[self.pos]
@@ -51,9 +55,11 @@ class Interpreter():
         if self.current_token.type == 'eof':
             return False
         
-        if self.current_token.value == '}':
+        while self.current_token.value == '}':
             self.return_scope()
+            self.consume(['operator'])
 
+        print(self.current_token.type + ' -> ' + str(self.current_token.value) + ' ' + str(self.current_token.line))
         if self.current_token.type == 'identifier':
             key = self.current_token
 
@@ -72,10 +78,43 @@ class Interpreter():
 
                 return True
 
-            value = self.current_token
+            value = self.current_token.value
             self.consume(['identifier', 'string'])
 
-            node = Node(key.value, value.value)
+            if self.current_token.value == '{':
+                new_scope = Node(key.value, '(array)')
+                new_scope.nodes = []
+
+                new_scope.previous_scope = self.scope
+                self.scope.nodes.append(new_scope)
+                self.scope = new_scope
+                self.consume(['operator'])
+
+                return True
+            
+            #print(str(self.current_token.line))
+            if self.current_token.type == 'separator':
+                unique = value
+                value = []
+                value.append(unique)
+
+                while self.current_token.type == 'separator':
+                    self.consume(['separator'])
+                    value.append(self.current_token.value)
+                    self.consume(["identifier", 'string'])
+
+                if self.current_token.value == '{':
+                    new_scope = Node(key.value, '(array)')
+                    new_scope.nodes = []
+
+                    new_scope.previous_scope = self.scope
+                    self.scope.nodes.append(new_scope)
+                    self.scope = new_scope
+                    self.consume(["operator"])
+
+                    return True
+
+            node = Node(key.value, value)
             node.nodes = []
             self.scope.nodes.append(node)
 

@@ -6,11 +6,14 @@ class DebugNodes():
 
     def __init__(self, main_node):
         self.main_node = main_node
+
+        return 
         self.node = main_node
         self.debug(0)
 
     def debug(self, index):
-        i = index 
+        i = index
+    
         for i in range(index, len(self.node.nodes), 1):
 
             if len(self.node.nodes[i].nodes) > 0:

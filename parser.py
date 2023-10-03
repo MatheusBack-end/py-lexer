@@ -29,10 +29,10 @@ class Parser():
 
         char = self.text[self.pos]
         
-        if char.isalnum():
+        if char.isalnum() or char == '-' or char == '_':
             identifier = ''
         
-            while(char.isalnum()):
+            while(char.isalnum() or char == '.' or char == '-' or char == '_'):
                 identifier += char
                 char = self.consume_char()
 
@@ -78,7 +78,21 @@ class Parser():
             self.consume_char()
             return self.get_next_token()
 
-        print('unespected token ' + str(char) + ' on line: ' + str(self.line))
+        if char == ';':
+            while char != "\n":
+                char = self.consume_char()
+
+            return self.get_next_token()
+
+        if char == '\t':
+            self.consume_char()
+            return self.get_next_token()
+
+        if char == ',':
+            self.consume_char()
+            return Token('separator', char, self.line)
+
+        print('unespected token ' + str(bytes(char, 'ascii')) + ' on line: ' + str(self.line))
         quit(1)
 
 
