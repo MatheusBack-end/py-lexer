@@ -40,6 +40,7 @@ class Interpreter():
             self.return_scope()
             self.consume(['operator'])
 
+        #print(self.current_token.type, self.current_token.line)
         if self.current_token.type == 'identifier':
             key = self.current_token
 
@@ -90,13 +91,17 @@ class Interpreter():
                     self.consume(["identifier", 'string'])
 
                 if self.current_token.value == '{':
-                    new_scope = Node(key.value, '(array)')
+                    new_scope = Node(key.value, [])
                     new_scope.nodes = []
                     
                     new_scope.previous_scope = self.scope
                     self.scope = new_scope
                     value.append(new_scope)
                     self.consume(["operator"])
+
+                    node = Node(key.value, value)
+                    node.nodes = []
+                    self.scope.nodes.append(node)
 
                     return True
 
