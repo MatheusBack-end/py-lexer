@@ -1,5 +1,4 @@
 from node import Node
-from debug_nodes import DebugNodes
 
 class Interpreter():
 
@@ -14,18 +13,12 @@ class Interpreter():
         self.document_node = Node('document_node', None)
     
     def interpreter(self):
-        #for i in range(0, len(self.tokens), 1):
-            #print(self.tokens[i].type)
-            
-        #return
         self.scope = self.document_node
         self.scope.nodes = []
         self.current_token = self.tokens[self.pos]
 
         while self.eat():
             pass
-
-        #DebugNodes(self.document_node)
     
     def next_token(self):
         self.pos += 1
@@ -76,7 +69,6 @@ class Interpreter():
                 new_scope.nodes = []
 
                 new_scope.previous_scope = self.scope
-                #self.scope.nodes.append(new_scope)
                 node = Node(key.value, value)
                 node.nodes = []
                 self.scope.nodes.append(node)
@@ -87,7 +79,6 @@ class Interpreter():
                 
                 return True
             
-            #print(str(self.current_token.line))
             if self.current_token.type == 'separator':
                 unique = value
                 value = []
@@ -114,9 +105,6 @@ class Interpreter():
             self.scope.nodes.append(node)
 
             return True
-
-    def eval(self):
-        pass
 
     def consume(self, token_types):
         for i in range(0, len(token_types), 1):
