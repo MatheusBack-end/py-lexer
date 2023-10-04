@@ -5,10 +5,15 @@ class Parser():
     text = None
     pos = 0
     line = 0
+
+    OPERATOR = ['{', '}', ':']
+    STRING = ['"', "'"]
+    ALPHANUM = ['-', '_', '.']
+    IGNORE = [' ', '\t', '\r']
+    GLOBAL_IGNORE = [' ', '\t', '\r', '\n', ';']
     
     def __init__(self, text):
         self.text = text
-
 
     def tokenizer(self):
         tokens = []
@@ -24,76 +29,48 @@ class Parser():
         return tokens
 
     def get_next_token(self):
+        char = self.ignore_whitespace(self.text[self.pos])
+
         if self.pos > len(self.text) -1:
             return Token('eof', len(self.text), self.line)
-
-        char = self.text[self.pos]
         
-        if char.isalnum() or char == '-' or char == '_':
-            identifier = ''
-        
-            while(char.isalnum() or char == '.' or char == '-' or char == '_'):
-                identifier += char
-                char = self.consume_char()
+        if char.isalnum() or char in self.ALPHANUM:
+            return self.get_identifier(char)
 
-            return Token('identifier', identifier, self.line)
-
-        if char == ':':
-            token = Token('operator', ':', self.line)
+        if char in self.OPERATOR:
             self.consume_char()
-            
-            return token
+            return Token('operator', char, self.line)
 
-        if char == '{':
-            token = Token('operator', '{', self.line)
-            self.consume_char()
-
-            return token
-
-        if char == '}':
-            token = Token('operator', '}', self.line)
-            self.consume_char()
-
-            return token
-
-        if char == '"':
-            char = self.consume_char()
-            
-            string = ''
-
-            while char != '"':
-                string += char
-                char = self.consume_char()
-
-            self.consume_char()
-
-            return Token('string', string, self.line)
-
-        if char == '\n':
-            self.line += 1
-            self.consume_char()
-            return self.get_next_token()
-
-        if char == ' ':
-            self.consume_char()
-            return self.get_next_token()
-
-        if char == ';':
-            while char != "\n":
-                char = self.consume_char()
-
-            return self.get_next_token()
-
-        if char == '\t':
-            self.consume_char()
-            return self.get_next_token()
+        if char in self.STRING:
+            return self.get_string()
 
         if char == ',':
             self.consume_char()
             return Token('separator', char, self.line)
 
-        print('unespected token ' + str(bytes(char, 'ascii')) + ' on line: ' + str(self.line))
-        quit(1)
+        self.parser_error(char)
+
+    def get_string(self):
+        char = self.consume_char()
+            
+        string = ''
+
+        while char != '"':
+            string += char
+            char = self.consume_char()
+
+        self.consume_char()
+
+        return Token('string', string, self.line)
+
+    def get_identifier(self, char):
+        identifier = ''
+        
+        while char.isalnum() or char in self.ALPHANUM:
+            identifier += char
+            char = self.consume_char()
+
+        return Token('identifier', identifier, self.line)
 
 
     def consume_char(self):
@@ -103,3 +80,24 @@ class Parser():
             return None
 
         return self.text[self.pos]
+
+    def ignore_whitespace(self, char):
+        while char in self.IGNORE:
+            char = self.consume_char()
+
+        if char == ';':
+            while char != '\n':
+                char = self.consume_char()
+
+        if char == '\n':
+            self.line += 1
+            char = self.consume_char()
+
+        if char in self.GLOBAL_IGNORE:
+            return self.ignore_whitespace(char)
+
+        return char
+
+    def parser_error(self, char):
+        print("parser error")
+        quit(1)

@@ -2,7 +2,7 @@ from parser import Parser
 from interpreter import Interpreter
 from fbx_to_obj import FbxToObj
 
-file = open('tests/fbx.fbx', 'r')
+file = open('tests/Handgun_fbx_6_1_ASCII.fbx', 'r')
 parser = Parser(file.read())
 interpreter = Interpreter(parser.tokenizer())
 interpreter.interpreter()
