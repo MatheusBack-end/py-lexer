@@ -8,7 +8,7 @@ class Parser():
 
     OPERATOR = ['{', '}', ':']
     STRING = ['"', "'"]
-    ALPHANUM = ['-', '_', '.']
+    ALPHANUM = ['-', '_', '.', '*']
     IGNORE = [' ', '\t', '\r']
     GLOBAL_IGNORE = [' ', '\t', '\r', '\n', ';']
     
@@ -86,5 +86,5 @@ class Parser():
         return char
 
     def parser_error(self, char):
-        print("parser error")
+        print("parser error " + str(bytes(char, 'ascii')) + ' ' + str(self.line))
         quit(1)

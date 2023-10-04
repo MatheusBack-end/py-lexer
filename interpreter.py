@@ -1,3 +1,21 @@
+"""
+simple key and value 
+    [identifier][operator -> ':'][identifier, string]
+
+multiples values 
+    [identifier][operator -> ':'][identifier, string][separator][etc..]
+
+array value 
+    [identifier][operator -> ':'][operator -> '{'][etc..][operator -> '}']
+
+value and array 
+    [identifier][operator -> ':'][identifier, string][operator -> '{'][etc..][operator -> '}']
+
+multiples values and array 
+    [identifier][operator -> ':'][identifier, string][separator][etc..][operator -> '{'][etc..][operator -> '}']
+
+"""
+
 from node import Node
 
 class Interpreter():
@@ -31,19 +49,21 @@ class Interpreter():
 
         self.scope = previous
 
-    def eat(self):
-        if self.current_token.type == 'eof':
-            return False
-        
+    def close_scopes(self):
         while self.current_token.value == '}':
-            self.return_scope()
             self.consume(['operator'])
+            self.return_scope()
 
-        #print(self.current_token.type, self.current_token.line)
+    def eat(self):
+        if self.end_tokens():
+            return False
+
+        self.close_scopes()
+
         if self.current_token.type == 'identifier':
             key = self.current_token
-
             self.consume(['identifier'])
+
             self.consume(['operator'])
             
             if self.current_token.value == '{':
@@ -102,7 +122,6 @@ class Interpreter():
 
                     node = Node(key.value, value)
                     node.nodes = []
-                    print(self.scope.previous_scope.key)
                     self.scope.previous_scope.nodes.append(node)
 
                     return True
@@ -125,4 +144,14 @@ class Interpreter():
         print('SyntaxError: expected \'' + str(token_types) + '\' -> ' + str(self.current_token.type) + ' line: ' + str(self.current_token.line))
         quit()
 
-  
+    def end_tokens(self):
+        if self.current_token.type == 'eof':
+            return True
+
+        return False
+
+    def get_simple_node(self, node):
+        pass
+
+    def get_list(self, key):
+        pass
