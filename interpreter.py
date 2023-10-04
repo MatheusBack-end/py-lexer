@@ -8,21 +8,20 @@ class Interpreter():
     document_node = None
     scope = None
 
-    def __init__(self, tokens):
-        self.tokens = tokens
+    def __init__(self, parser):
+        self.parser = parser
         self.document_node = Node('document_node', None)
     
     def interpreter(self):
         self.scope = self.document_node
         self.scope.nodes = []
-        self.current_token = self.tokens[self.pos]
+        self.current_token = self.next_token()
 
         while self.eat():
             pass
     
     def next_token(self):
-        self.pos += 1
-        return self.tokens[self.pos]
+        return self.parser.get_next_token()
 
     def return_scope(self):
         previous = self.scope.previous_scope

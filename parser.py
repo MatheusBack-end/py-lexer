@@ -15,19 +15,6 @@ class Parser():
     def __init__(self, text):
         self.text = text
 
-    def tokenizer(self):
-        tokens = []
-        
-        token = self.get_next_token()
-
-        while token.type != 'eof':
-            tokens.append(token)
-            token = self.get_next_token()
-        
-        tokens.append(token)
-
-        return tokens
-
     def get_next_token(self):
         char = self.ignore_whitespace(self.text[self.pos])
 
