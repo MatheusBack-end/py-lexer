@@ -90,8 +90,10 @@ class Interpreter():
                     value.append(self.current_token.value)
                     self.consume(["identifier", 'string'])
 
+                #print(value)
+
                 if self.current_token.value == '{':
-                    new_scope = Node(key.value, [])
+                    new_scope = Node(key.value, '[array]')
                     new_scope.nodes = []
                     
                     new_scope.previous_scope = self.scope
@@ -101,7 +103,8 @@ class Interpreter():
 
                     node = Node(key.value, value)
                     node.nodes = []
-                    self.scope.nodes.append(node)
+                    print(self.scope.previous_scope.key)
+                    self.scope.previous_scope.nodes.append(node)
 
                     return True
 
