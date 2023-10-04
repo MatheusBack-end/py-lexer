@@ -1,0 +1,7 @@
+; comment
+
+Objects: {
+  Model: "Model::Light", "Null" {
+           version: 110
+         }
+}
