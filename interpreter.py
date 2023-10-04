@@ -61,44 +61,18 @@ class Interpreter():
         self.close_scopes()
 
         if self.current_token.type == 'identifier':
-            key = self.current_token
-            self.consume(['identifier'])
+            key = self.consume(['identifier'])
 
             self.consume(['operator'])
             
-            if self.current_token.value == '{':
-                new_scope = Node(key.value, '(array)')
-                new_scope.nodes = []
-                
-                new_scope.previous_scope = self.scope
-                self.scope.nodes.append(new_scope)
-                self.scope = new_scope
-                self.consume(['operator'])
-                
-
+            if self.consume_list(key):
                 return True
 
-            value = self.current_token.value
-            self.consume(['identifier', 'string'])
+            value = self.consume(['identifier', 'string'])
 
-            if self.current_token.value == '{':
-                unique = value
-                value = []
-                value.append(unique)
-                new_scope = Node(key.value, '(array)')
-                new_scope.nodes = []
-
-                new_scope.previous_scope = self.scope
-                node = Node(key.value, value)
-                node.nodes = []
-                self.scope.nodes.append(node)
-                value.append(new_scope)
-                self.scope = new_scope
-                self.consume(['operator'])
-
-                
+            if self.consume_list_in_values(key, value):
                 return True
-            
+             
             if self.current_token.type == 'separator':
                 unique = value
                 value = []
@@ -133,13 +107,13 @@ class Interpreter():
             return True
 
     def consume(self, token_types):
-        for i in range(0, len(token_types), 1):
-            if self.current_token.type == token_types[i]:
-                self.current_token = self.next_token()
-                return None
-            else:
-                if self.current_token.type == 'eof':
-                    return None
+        if self.current_token.type in token_types:
+            token = self.current_token
+            self.current_token = self.next_token()
+            return token
+        
+        if self.current_token.type == 'eof':
+            return None
 
         print('SyntaxError: expected \'' + str(token_types) + '\' -> ' + str(self.current_token.type) + ' line: ' + str(self.current_token.line))
         quit()
@@ -153,5 +127,35 @@ class Interpreter():
     def get_simple_node(self, node):
         pass
 
-    def get_list(self, key):
-        pass
+    def consume_list(self, key):
+        if self.current_token.value == '{':
+            list_scope = Node(key.value, '[list]')
+            list_scope.nodes = []
+            list_scope.previous_scope = self.scope
+
+            self.scope.nodes.append(list_scope)
+            self.scope = list_scope
+            self.consume(['operator'])
+
+            return True
+
+        return False
+
+    def consume_list_in_values(self, key, value):
+        if self.current_token.value == '{':
+            value_array = []
+            value_array.append(value)
+            list_scope = Node(key, '[list]')
+            list_scope.nodes = []
+            list_scope.previous_scope = self.scope
+            value_array.append(list_scope)
+            node = Node(key.value, value_array)
+            node.nodes = []
+            self.scope = list_scope
+            self.consume(['operator'])
+
+            return True
+
+        return False
+
+
