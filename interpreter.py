@@ -1,21 +1,3 @@
-"""
-simple key and value 
-    [identifier][operator -> ':'][identifier, string]
-
-multiples values 
-    [identifier][operator -> ':'][identifier, string][separator][etc..]
-
-array value 
-    [identifier][operator -> ':'][operator -> '{'][etc..][operator -> '}']
-
-value and array 
-    [identifier][operator -> ':'][identifier, string][operator -> '{'][etc..][operator -> '}']
-
-multiples values and array 
-    [identifier][operator -> ':'][identifier, string][separator][etc..][operator -> '{'][etc..][operator -> '}']
-
-"""
-
 from node import Node
 
 class Interpreter():
@@ -79,7 +61,7 @@ class Interpreter():
                 if self.consume_list_in_values_deriva(key, value):
                     return True
 
-            node = Node(key.value, value)
+            node = Node(key.value, [value])
             node.nodes = []
             self.scope.nodes.append(node)
 
