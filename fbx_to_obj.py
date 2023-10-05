@@ -10,4 +10,4 @@ class FbxToObj():
     def fbx_to_mesh(self):
         objects = self.get_objects()
 
-        print(objects.get('Model').value[0])
+        print(objects.get("Model").value[0].value)

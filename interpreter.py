@@ -74,30 +74,9 @@ class Interpreter():
                 return True
              
             if self.current_token.type == 'separator':
-                unique = value
-                value = []
-                value.append(unique)
-
-                while self.current_token.type == 'separator':
-                    self.consume(['separator'])
-                    value.append(self.current_token.value)
-                    self.consume(["identifier", 'string'])
-
-                #print(value)
-
-                if self.current_token.value == '{':
-                    new_scope = Node(key.value, '[array]')
-                    new_scope.nodes = []
-                    
-                    new_scope.previous_scope = self.scope
-                    self.scope = new_scope
-                    value.append(new_scope)
-                    self.consume(["operator"])
-
-                    node = Node(key.value, value)
-                    node.nodes = []
-                    self.scope.previous_scope.nodes.append(node)
-
+                value = self.values_by_separator(value)
+                
+                if self.consume_list_in_values_deriva(key, value):
                     return True
 
             node = Node(key.value, value)
@@ -145,7 +124,7 @@ class Interpreter():
         if self.current_token.value == '{':
             value_array = []
             value_array.append(value)
-            list_scope = Node(key, '[list]')
+            list_scope = Node(key.value, '[list]')
             list_scope.nodes = []
             list_scope.previous_scope = self.scope
             value_array.append(list_scope)
@@ -157,5 +136,33 @@ class Interpreter():
             return True
 
         return False
+
+
+    def consume_list_in_values_deriva(self, key, value):
+        if self.current_token.value == '{':
+            list_scope = Node(key.value, '[list]')
+            list_scope.nodes = []
+            list_scope.previous_scope = self.scope
+            value.append(list_scope)
+            node = Node(key.value, value)
+            node.nodes = []
+            self.scope.nodes.append(node)
+            self.scope = list_scope
+            self.consume(['operator'])
+
+            return True
+
+        return False
+
+    def values_by_separator(self, value):
+        value_array = []
+        value_array.append(value)
+
+        while self.current_token.type == 'separator':
+            self.consume(['separator'])
+            value_array.append(self.consume(['identifier', 'string']))
+
+        return value_array
+        
 
 
